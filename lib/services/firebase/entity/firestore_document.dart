@@ -5,7 +5,7 @@ abstract class FirestoreDocument extends FirestoreEntity {
   // static String get parentPath =>
   //     throw UnimplementedError('Must be implemented in subclass');
 
-  FirestoreDocument({required String collectionPath})
+  FirestoreDocument({required String collectionPath, super.bStoreItem})
     : _collectionPath = collectionPath {
     documentRef = FirebaseFirestore.instance.doc(path);
   }

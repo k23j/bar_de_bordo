@@ -4,8 +4,18 @@ abstract class FirestoreEntity {
   String get id;
   String get collectionPath;
 
-  String get path =>
-      '${AppState.instance.currentUser!.path}/$collectionPath/$id';
+  ///If false this entity will be stored in firestore root
+  bool bStoreItem;
+
+  FirestoreEntity({this.bStoreItem = true});
+
+  String get path {
+    //TODO: change to store
+    final String storePath = bStoreItem
+        ? '${AppState.instance.currentUser!.path}/'
+        : '';
+    return '$storePath$collectionPath/$id';
+  }
 
   Future<bool> delete();
 }
