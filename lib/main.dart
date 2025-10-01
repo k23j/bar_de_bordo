@@ -1,4 +1,5 @@
 import 'package:bar_de_bordo/appearance/custom_theme.dart';
+import 'package:bar_de_bordo/screens/create_store_screen.dart';
 import 'package:bar_de_bordo/screens/login_screen.dart';
 import 'package:bar_de_bordo/core/app_state.dart';
 import 'package:bar_de_bordo/core/init_app.dart';
@@ -45,7 +46,16 @@ class MainApp extends StatelessWidget {
             return LoginScreen();
           }
 
-          return MainMenu();
+          return StreamBuilder(
+            stream: AppState.instance.currentStoreStream,
+            initialData: null,
+            builder: (context, snapshot) {
+              if (snapshot.data == null) {
+                return CreateStoreScreen();
+              }
+              return MainMenu();
+            },
+          );
         },
       ),
     );

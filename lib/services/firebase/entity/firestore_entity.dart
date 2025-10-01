@@ -12,7 +12,7 @@ abstract class FirestoreEntity {
   String get path {
     //TODO: change to store
     final String storePath = bStoreItem
-        ? '${AppState.instance.currentUser!.path}/'
+        ? '${AppState.instance.currentStore!.path}/'
         : '';
     return '$storePath$collectionPath/$id';
   }

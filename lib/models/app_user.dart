@@ -60,7 +60,7 @@ class AppUser extends FirestoreDocument {
       id: map['id'],
       name: map['name'],
       creationDate: DateTime.parse(map['creationDate']),
-      storeIdList: (map['storeIdList'] as List<dynamic>).cast<String>(),
+      storeIdList: (map['storeIdList'] as List?)?.cast<String>() ?? [],
       selectedStoreId: map['selectedStoreId'],
     );
   }

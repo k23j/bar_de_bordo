@@ -16,7 +16,7 @@ class Customer extends FirestoreDocument {
       'id': id,
       'name': name,
       'phone': phone.toString(),
-      'debt': debtAmount.toString(),
+      'debt': debtAmount.value,
     };
   }
 
@@ -25,9 +25,7 @@ class Customer extends FirestoreDocument {
       map['id'],
       name: map['name'],
       phone: PhoneNumber.fromString(map['phone']),
-      debtAmount: (map['debt'] != null)
-          ? Price.fromString(map['debt'])
-          : Price(),
+      debtAmount: (map['debt'] != null) ? Price(value: map['debt']) : Price(),
     );
   }
 

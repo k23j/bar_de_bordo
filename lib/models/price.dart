@@ -19,10 +19,5 @@ class Price {
     return 'R\$ ${(value / 100).toStringAsFixed(2)}';
   }
 
-  @override
-  String toString() {
-    return intToString(value);
-  }
-
   String get formated => intToString(value);
 }

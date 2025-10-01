@@ -67,15 +67,20 @@ class AppState {
     _currentStoreController.sink.add(null);
     if (user == null || user.storeIdList.isEmpty) return null;
 
-    currentStore = await FirestoreDocument.loadFromFirestore<Store>(
+    final store = await FirestoreDocument.loadFromFirestore<Store>(
       parentPath: 'str',
       id: user.selectedStore,
       fromMap: Store.fromMap,
     );
 
-    if (currentStore != null) _currentStoreController.sink.add(currentStore);
+    if (store != null) changeStore(store);
 
     return currentStore;
+  }
+
+  void changeStore(Store? store) {
+    currentStore = store;
+    _currentStoreController.sink.add(currentStore);
   }
 
   ValueNotifier<Widget?> currentFAB = ValueNotifier(null);

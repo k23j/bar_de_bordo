@@ -45,7 +45,10 @@ class _MainMenuState extends State<MainMenu> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Bar de Bordo"),
+        title: ValueListenableBuilder<String>(
+          valueListenable: AppState.instance.currentStore!.nameNotifier,
+          builder: (context, value, child) => Text(value),
+        ),
         actions: [if (selectedId == 3) SettingsOverflowMenu()],
       ),
       body: currentScreen,
