@@ -1,4 +1,5 @@
 import 'package:bar_de_bordo/services/firebase/entity/firestore_entity.dart';
+import 'package:bar_de_bordo/services/firebase/typedefs.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 abstract class FirestoreDocument extends FirestoreEntity {
@@ -38,17 +39,18 @@ abstract class FirestoreDocument extends FirestoreEntity {
     return true;
   }
 
-  static Future<FirestoreDocument?> loadFromFirestore(
-    String parentPath,
-    String id,
-  ) async {
+  static Future<T?> loadFromFirestore<T extends FirestoreDocument>({
+    required String parentPath,
+    required String id,
+    required FromMap<T> fromMap,
+  }) async {
     try {
       final doc = await FirebaseFirestore.instance.doc('$parentPath/$id').get();
       final Map<String, dynamic>? data = doc.data();
 
       if (data == null) return null;
 
-      return FirestoreDocument.fromMap(data);
+      return fromMap(data);
     } catch (err) {
       print(err);
       return null;

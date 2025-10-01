@@ -1,5 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:bar_de_bordo/models/user.dart';
+import 'package:bar_de_bordo/models/app_user.dart';
 
 class FirebaseManager {
   FirebaseManager._privateConstructor();

@@ -1,4 +1,5 @@
 import 'package:bar_de_bordo/core/app_state.dart';
+import 'package:bar_de_bordo/models/app_user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -110,16 +111,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
         await credential.user?.updateDisplayName(_nameController.text);
 
-        await FirebaseFirestore.instance
-            .collection('usr')
-            .doc(credential.user!.uid)
-            .set({
-              'name': _nameController.text,
-              'creation_date': DateTime.now(),
-              'last_login': DateTime.now(),
-              // 'roles': ['user'],
-              'expiration_date': DateTime.now(),
-            });
+        final AppUser newUser = AppUser(
+          id: credential.user!.uid,
+          name: _nameController.text,
+          creationDate: DateTime.now(),
+        );
+
+        await newUser.saveOnFirestore();
 
         AppState.instance.updateAppUser(credential.user);
       } on FirebaseAuthException catch (e) {

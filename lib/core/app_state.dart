@@ -1,7 +1,9 @@
 import 'dart:async';
 
-import 'package:bar_de_bordo/models/user.dart';
+import 'package:bar_de_bordo/models/app_user.dart';
+import 'package:bar_de_bordo/models/store.dart';
 import 'package:bar_de_bordo/services/firebase/entity/firestore_collection.dart';
+import 'package:bar_de_bordo/services/firebase/entity/firestore_document.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 
@@ -33,24 +35,47 @@ class AppState {
 
   Stream<AppUser?> get currentUserStream => _currentUserController.stream;
 
-  AppUser? _currentUser;
-  AppUser? get currentUser => _currentUser;
+  AppUser? currentUser;
+  // AppUser? get currentUser => _currentUser;
 
   Future<void> updateAppUser(User? user) async {
-    _currentUser = null;
+    currentUser = null;
     _currentUserController.sink.add(null);
 
     if (user == null) return;
 
-    final appUser = await AppUser.userFromFirestore(user);
-    _currentUser = appUser;
-    _currentUserController.add(appUser);
-    await onUserLogin();
+    final AppUser? appUser = await FirestoreDocument.loadFromFirestore<AppUser>(
+      parentPath: 'usr',
+      id: user.uid,
+      fromMap: AppUser.fromMap,
+    );
+    currentUser = appUser;
+    if (currentUser != null) _currentUserController.sink.add(currentUser);
+
+    await onUserLogin(appUser);
   }
 
-  Future<bool> onUserLogin() async {
-    // return await FirestoreCollection.initializeAllCollections();
-    return true;
+  final StreamController<Store?> _currentStoreController =
+      StreamController<Store?>.broadcast();
+
+  Stream<Store?> get currentStoreStream => _currentStoreController.stream;
+
+  Store? currentStore;
+  // Store? get currentStore => _currentStore;
+
+  Future<Store?> onUserLogin(AppUser? user) async {
+    _currentStoreController.sink.add(null);
+    if (user == null || user.storeIdList.isEmpty) return null;
+
+    currentStore = await FirestoreDocument.loadFromFirestore<Store>(
+      parentPath: 'str',
+      id: user.selectedStore,
+      fromMap: Store.fromMap,
+    );
+
+    if (currentStore != null) _currentStoreController.sink.add(currentStore);
+
+    return currentStore;
   }
 
   ValueNotifier<Widget?> currentFAB = ValueNotifier(null);

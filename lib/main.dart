@@ -4,7 +4,7 @@ import 'package:bar_de_bordo/core/app_state.dart';
 import 'package:bar_de_bordo/core/init_app.dart';
 import 'package:bar_de_bordo/main_menu.dart';
 import 'package:bar_de_bordo/loading_screen.dart';
-import 'package:bar_de_bordo/models/user.dart';
+import 'package:bar_de_bordo/models/app_user.dart';
 import 'package:bar_de_bordo/user_error_screen.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
