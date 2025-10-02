@@ -1,6 +1,14 @@
 class Price {
   Price({this.value = 0});
 
+  factory Price.sum(Iterable<Price> toSum) {
+    final int sum = toSum.fold(
+      0,
+      (previousValue, element) => previousValue += element.value,
+    );
+    return Price(value: sum);
+  }
+
   int value;
   double get decimal => value / 100;
 
@@ -19,5 +27,14 @@ class Price {
     return 'R\$ ${(value / 100).toStringAsFixed(2)}';
   }
 
+  @override
+  String toString() {
+    return 'R\$ ${(value / 100).toStringAsFixed(2)}';
+  }
+
   String get formated => intToString(value);
+
+  Price operator *(int other) {
+    return Price(value: value * other);
+  }
 }

@@ -6,14 +6,24 @@ abstract class FirestoreDocument extends FirestoreEntity {
   // static String get parentPath =>
   //     throw UnimplementedError('Must be implemented in subclass');
 
-  FirestoreDocument({required String collectionPath, super.bStoreItem})
-    : _collectionPath = collectionPath {
+  FirestoreDocument({
+    required String collectionPath,
+    String? copyToPath,
+    super.bStoreItem,
+  }) : _collectionPath = collectionPath {
     documentRef = FirebaseFirestore.instance.doc(path);
+
+    if (copyToPath != null) {
+      copyRef = FirebaseFirestore.instance.doc(copyToPath);
+    } else {
+      copyRef = null;
+    }
   }
 
   final String _collectionPath;
 
   late final DocumentReference documentRef;
+  late final DocumentReference? copyRef;
 
   @override
   String get collectionPath => _collectionPath;
@@ -30,7 +40,24 @@ abstract class FirestoreDocument extends FirestoreEntity {
 
   Future<bool> saveOnFirestore() async {
     try {
-      await documentRef.set(toMap());
+      await Future.wait([
+        documentRef.set(toMap()),
+        if (copyRef != null) copyRef!.set(toMap()),
+      ]);
+    } catch (err) {
+      print(err);
+      return false;
+    }
+
+    return true;
+  }
+
+  Future<bool> updateFields(Map<String, dynamic> map) async {
+    try {
+      await Future.wait([
+        documentRef.set(map, SetOptions(merge: true)),
+        if (copyRef != null) copyRef!.set(map, SetOptions(merge: true)),
+      ]);
     } catch (err) {
       print(err);
       return false;

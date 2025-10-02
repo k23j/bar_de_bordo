@@ -10,11 +10,10 @@ abstract class FirestoreEntity {
   FirestoreEntity({this.bStoreItem = true});
 
   String get path {
-    //TODO: change to store
     final String storePath = bStoreItem
-        ? '${AppState.instance.currentStore!.path}/'
+        ? AppState.instance.currentStore!.path
         : '';
-    return '$storePath$collectionPath/$id';
+    return '$storePath/$collectionPath/$id';
   }
 
   Future<bool> delete();

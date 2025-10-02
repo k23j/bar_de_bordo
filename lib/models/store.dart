@@ -21,7 +21,7 @@ class Store extends FirestoreDocument {
     _name = newName;
     nameNotifier.value = newName;
 
-    saveOnFirestore();
+    updateFields({'name': newName});
   }
 
   static String? nameValidator(String? value) {

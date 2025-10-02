@@ -34,7 +34,7 @@ class ProductTile extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(product.price.toString()),
+          Text(product.price.formated),
           SizedBox(width: 16),
           IconButton(onPressed: () => edit(context), icon: Icon(Icons.edit)),
           IconButton(onPressed: delete, icon: Icon(Icons.delete)),
