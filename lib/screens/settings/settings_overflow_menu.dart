@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class SettingsOverflowMenu extends StatelessWidget {
-  const SettingsOverflowMenu({super.key});
+  SettingsOverflowMenu({super.key});
 
   void logOut(BuildContext context) {
     FirebaseAuth.instance.signOut();
@@ -19,24 +19,25 @@ class SettingsOverflowMenu extends StatelessWidget {
     );
   }
 
+  late final Map<String, void Function(BuildContext)> menuItemMap = {
+    'Alterar Nome': changeStoreName,
+    'Sair': logOut,
+  };
+
+  void onSelected(String value, BuildContext context) {
+    if (!menuItemMap.containsKey(value)) return;
+
+    menuItemMap[value]!(context);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return PopupMenuButton(
+    return PopupMenuButton<String>(
       icon: Icon(Icons.more_vert),
-      itemBuilder: (context) => [
-        PopupMenuItem(
-          child: TextButton(
-            onPressed: () => changeStoreName(context),
-            child: Text("Alterar nome"),
-          ),
-        ),
-        PopupMenuItem(
-          child: TextButton(
-            onPressed: () => logOut(context),
-            child: Text("Sair"),
-          ),
-        ),
-      ],
+      onSelected: (value) => onSelected(value, context),
+      itemBuilder: (context) => menuItemMap.keys
+          .map((e) => PopupMenuItem(value: e, child: Text(e)))
+          .toList(),
     );
   }
 }

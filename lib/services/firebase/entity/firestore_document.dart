@@ -52,19 +52,19 @@ abstract class FirestoreDocument extends FirestoreEntity {
     return true;
   }
 
-  Future<bool> updateFields(Map<String, dynamic> map) async {
-    try {
-      await Future.wait([
-        documentRef.set(map, SetOptions(merge: true)),
-        if (copyRef != null) copyRef!.set(map, SetOptions(merge: true)),
-      ]);
-    } catch (err) {
-      print(err);
-      return false;
-    }
+  // Future<bool> updateFields(Map<String, dynamic> map) async {
+  //   try {
+  //     await Future.wait([
+  //       documentRef.set(map, SetOptions(merge: true)),
+  //       if (copyRef != null) copyRef!.set(map, SetOptions(merge: true)),
+  //     ]);
+  //   } catch (err) {
+  //     print(err);
+  //     return false;
+  //   }
 
-    return true;
-  }
+  //   return true;
+  // }
 
   static Future<T?> loadFromFirestore<T extends FirestoreDocument>({
     required String parentPath,
@@ -87,14 +87,24 @@ abstract class FirestoreDocument extends FirestoreEntity {
   @override
   Future<bool> delete() async {
     try {
-      await FirebaseFirestore.instance.doc(path).delete();
+      await Future.wait([
+        documentRef.delete(),
+        if (copyRef != null) copyRef!.delete(),
+      ]);
       return true;
     } catch (err) {
       return false;
     }
   }
 
-  void update(Map<String, int> map) {
-    documentRef.update(map);
+  void update(Map<String, dynamic> map) {
+    try {
+      Future.wait([
+        documentRef.update(map),
+        if (copyRef != null) copyRef!.update(map),
+      ]);
+    } catch (err) {
+      print(err);
+    }
   }
 }

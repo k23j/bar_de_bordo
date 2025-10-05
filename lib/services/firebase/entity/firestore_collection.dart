@@ -32,6 +32,19 @@ abstract class FirestoreCollection<T extends FirestoreDocument>
 
   Stream<QuerySnapshot> get snapshotStream => firestoreCollection.snapshots();
 
+  Future<T?> get(String id) async {
+    try {
+      final DocumentSnapshot<Object?> doc = await firestoreCollection
+          .doc(id)
+          .get();
+
+      return fromMap(doc.data() as Map<String, dynamic>);
+    } catch (err) {
+      print(err);
+      return null;
+    }
+  }
+
   Stream<List<T>> get itemsStream {
     return snapshotStream.map((snapshot) {
       return snapshot.docs
