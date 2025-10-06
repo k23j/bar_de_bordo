@@ -1,12 +1,35 @@
 import 'package:bar_de_bordo/models/price.dart';
+import 'package:bar_de_bordo/models/product.dart';
+import 'package:flutter/material.dart';
 
 class SaleProduct {
   final String id;
   final String name;
   final Price unitPrice;
-  final int quantity;
+  int get quantity => quantityNotifier.value;
+
+  final void Function()? onRemoved;
+
+  late final ValueNotifier<int> quantityNotifier;
 
   Price get totalPrice => unitPrice * quantity;
+
+  int addQuantity([int other = 1]) {
+    quantityNotifier.value += other;
+    return quantity;
+  }
+
+  int removeQuantity([int other = 1]) {
+    if (quantity - other <= 0) {
+      quantityNotifier.value = 0;
+
+      onRemoved?.call();
+      return 0;
+    } else {
+      quantityNotifier.value -= other;
+      return quantity;
+    }
+  }
 
   Map<String, dynamic> toMap() => {
     'id': id,
@@ -15,12 +38,21 @@ class SaleProduct {
     'quantity': quantity,
   };
 
-  const SaleProduct({
+  SaleProduct({
     required this.id,
     required this.name,
     required this.unitPrice,
-    required this.quantity,
-  });
+    int quantity = 1,
+    this.onRemoved,
+  }) {
+    quantityNotifier = ValueNotifier(quantity);
+  }
+
+  SaleProduct.fromProduct(Product product, {this.onRemoved})
+    : id = product.id,
+      name = product.name,
+      unitPrice = product.price,
+      quantityNotifier = ValueNotifier(1);
 
   factory SaleProduct.fromMap(Map<String, dynamic> map) {
     return SaleProduct(

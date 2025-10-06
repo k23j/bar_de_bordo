@@ -1,11 +1,13 @@
 import 'package:bar_de_bordo/core/app_state.dart';
+import 'package:bar_de_bordo/models/customer_collection.dart';
+import 'package:bar_de_bordo/models/product_collection.dart';
 import 'package:bar_de_bordo/screens/customers/customer_screen.dart';
 import 'package:bar_de_bordo/screens/home_screen.dart';
 import 'package:bar_de_bordo/screens/settings/settings_overflow_menu.dart';
 import 'package:bar_de_bordo/screens/settings/settings_screen.dart';
 import 'package:bar_de_bordo/screens/stock/stock_screen.dart';
-import 'package:bar_de_bordo/widgets/fab_add.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MainMenu extends StatefulWidget {
   const MainMenu({super.key});

@@ -1,46 +1,68 @@
 import 'package:bar_de_bordo/models/price.dart';
 import 'package:bar_de_bordo/models/sale_product.dart';
 import 'package:bar_de_bordo/services/firebase/entity/firestore_document.dart';
+import 'package:bar_de_bordo/services/uuid/id_generator.dart';
 
 class Sale extends FirestoreDocument {
   Sale(
     this.id, {
     required this.customerId,
-    required this.date,
+    required DateTime date,
     required this.productList,
     // required super.collectionPath,
-    int? totalPrice,
-  }) : super(
+    required int totalPrice,
+  }) : _price = Price(value: totalPrice),
+       super(
          collectionPath: buildMonthPath(date),
          copyToPath: "customers/$customerId/transactions",
-       ) {
-    if (totalPrice == null) {
-      price = Price.sum(productList.map((e) => e.totalPrice));
-    } else {
-      price = Price(value: totalPrice);
-    }
-  }
+       );
+
+  Sale.empty({this.customerId})
+    : id = IdGenerator.instance.generateStringId(),
+      productList = [],
+      _price = null,
+      //TODO: incorrect value if newsalescreen is opened in a month and the sale finished in the next
+      super(collectionPath: buildMonthPath(DateTime.now()));
 
   static String buildMonthPath(DateTime date) {
-    return 'sales/${date.year}-${date.month.toString().padLeft(2, '0')}';
+    return 'sales/monthly/${date.year}-${date.month.toString().padLeft(2, '0')}';
   }
 
   @override
   final String id;
 
-  final String customerId;
-  final DateTime date;
-  final List<SaleProduct> productList;
-  late final Price price;
+  String? customerId;
+  DateTime? date;
+  List<SaleProduct> productList;
+
+  Price? _price;
+
+  Price get price {
+    if (_price == null) {
+      return calcPrice();
+    } else {
+      return _price!;
+    }
+  }
+
+  bool isValid() {
+    return (customerId != null && productList.isNotEmpty);
+  }
+
+  Price calcPrice() {
+    return Price.sum(productList.map((e) => e.totalPrice));
+  }
 
   @override
   Map<String, dynamic> toMap() {
+    date ??= DateTime.now();
+    _price ??= calcPrice();
     return {
       'id': id,
       'customerId': customerId,
-      'date': date.toIso8601String(),
+      'date': date!.toIso8601String(),
       'productList': productList.map((e) => e.toMap()).toList(),
-      'price': price.value,
+      'price': _price!.value,
     };
   }
 
