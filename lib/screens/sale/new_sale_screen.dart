@@ -4,8 +4,9 @@ import 'package:bar_de_bordo/models/product.dart';
 import 'package:bar_de_bordo/models/product_collection.dart';
 import 'package:bar_de_bordo/models/sale.dart';
 import 'package:bar_de_bordo/models/sale_cart_notifier.dart';
+import 'package:bar_de_bordo/models/sale_overview.dart';
 import 'package:bar_de_bordo/screens/sale/cart_product_list.dart';
-import 'package:bar_de_bordo/screens/sale/sale_overview.dart';
+import 'package:bar_de_bordo/screens/sale/sale_overview_widget.dart';
 import 'package:bar_de_bordo/screens/sale/sale_product_list.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -23,12 +24,14 @@ class NewSaleScreen extends StatefulWidget {
 class _NewSaleScreenState extends State<NewSaleScreen> {
   final productCollection = ProductCollection();
 
-  late final sale = Sale.empty(customerId: widget.customerId);
-  final saleCartNotifier = SaleCartNotifier();
+  // late final sale = Sale.empty(customerId: widget.customerId);
+  // final saleCartNotifier = SaleCartNotifier();
 
-  void addProduct(Product product) {
-    saleCartNotifier.addProduct(product);
-  }
+  late SaleOverview overview = SaleOverview(customerId: widget.customerId);
+
+  // void addProduct(Product product) {
+  //   saleCartNotifier.addProduct(product);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -44,16 +47,7 @@ class _NewSaleScreenState extends State<NewSaleScreen> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Flexible(
-                  flex: 3,
-                  child: ChangeNotifierProvider<CustomerCollection>(
-                    create: (context) => CustomerCollection(),
-                    child: SaleOverview(
-                      sale: sale,
-                      saleCartNotifier: saleCartNotifier,
-                    ),
-                  ),
-                ),
+                Flexible(flex: 3, child: SaleOverviewWidget(data: overview)),
                 // Row(
                 //   mainAxisAlignment: MainAxisAlignment.center,
                 //   children: [
@@ -98,7 +92,7 @@ class _NewSaleScreenState extends State<NewSaleScreen> {
 
                       return SaleProductList(
                         productList: snapshot.data!,
-                        addProduct: addProduct,
+                        addProduct: overview.addProduct,
                       );
                     },
                   ),

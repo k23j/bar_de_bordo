@@ -15,11 +15,13 @@ class SaleProduct {
   Price get totalPrice => unitPrice * quantity;
 
   int addQuantity([int other = 1]) {
+    assert(other > 0);
+    if (other <= 0) return quantity;
     quantityNotifier.value += other;
     return quantity;
   }
 
-  int removeQuantity([int other = 1]) {
+  int subtractQuantity([int other = 1]) {
     if (quantity - other <= 0) {
       quantityNotifier.value = 0;
 
