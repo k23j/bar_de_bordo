@@ -50,14 +50,15 @@ class SaleCartNotifier extends ValueNotifier<List<SaleProduct>> {
 
     if (qnt <= 0 || !_map.containsKey(id)) return -1;
 
-    final result = _map[id]!.subtractQuantity(qnt);
-
-    if (result == 0) {
+    if (_map[id]!.quantity <= qnt) {
       removeProduct(_map[id]!);
       return -1;
     }
 
+    final result = _map[id]!.subtractQuantity(qnt);
+
     cartPriceNotifier.subtractPrice(_map[id]!.unitPrice * qnt);
+
     return result;
   }
 }
